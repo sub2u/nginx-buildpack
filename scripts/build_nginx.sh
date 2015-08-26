@@ -50,7 +50,7 @@ echo "Downloading $redis_url"
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
     --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' \
     --add-module=/${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${REDIS_VERSION}
-
+  make
   make install
 )
 
