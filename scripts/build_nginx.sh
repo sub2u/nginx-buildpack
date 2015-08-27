@@ -13,11 +13,13 @@ NGINX_VERSION=${NGINX_VERSION-1.8.0}
 PCRE_VERSION=${PCRE_VERSION-8.37}
 ZLIB_VERSION=${ZLIB_VERSION-1.2.8}
 REDIS_VERSION=${REDIS_VERSION-0.3.7}
+HEADERS_MORE_VERSION=${HEADERS_MORE_VERSION-0.25}
 
 nginx_tarball_url=http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 pcre_tarball_url=http://garr.dl.sourceforge.net/project/pcre/pcre/${PCRE_VERSION}/pcre-${PCRE_VERSION}.tar.bz2
 zlib_url=http://zlib.net/zlib-${ZLIB_VERSION}.tar.gz
 redis_url=http://people.FreeBSD.org/~osa/ngx_http_redis-${REDIS_VERSION}.tar.gz
+headers_more_nginx_module_url=https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VERSION}.tar.gz
 
 temp_dir=$(mktemp -d /tmp/nginx.XXXXXXXXXX)
 
@@ -43,14 +45,20 @@ echo "Downloading $redis_url"
 (
   cd nginx-${NGINX_VERSION}
   ./configure \
+    --http-log-path=//${temp_dir}/nginx/access.log \
+    --with-http_dav_module \
+    --http-client-body-temp-path=/${temp_dir}/nginx/body \
+    --http-proxy-temp-path=/${temp_dir}/nginx/proxy \
+    --with-http_stub_status_module \
+    --with-debug \
     --with-pcre=pcre-${PCRE_VERSION} \
     --with-zlib=zlib-${ZLIB_VERSION} \
     --prefix=/tmp/nginx \
     --with-http_gzip_static_module \
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
     --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,--as-needed' \
-    --add-module=/${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_redis-${REDIS_VERSION}
-  make
+    --add-module=/${temp_dir}/nginx-${NGINX_VERSION}/ngx_http_redis-${REDIS_VERSION} \
+    --add-module=/${temp_dir}/nginx-${NGINX_VERSION}/headers-more-nginx-module-${HEADERS_MORE_VERSION}
   make install
 )
 
