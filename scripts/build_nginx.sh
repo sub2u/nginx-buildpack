@@ -51,8 +51,6 @@ echo "Downloading $redis_url"
     --http-proxy-temp-path=/${temp_dir}/nginx/proxy \
     --with-http_stub_status_module \
     --with-debug \
-    --with-pcre=pcre-${PCRE_VERSION} \
-    --with-zlib=zlib-${ZLIB_VERSION} \
     --prefix=/tmp/nginx \
     --with-http_gzip_static_module \
     --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2' \
